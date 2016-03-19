@@ -1,0 +1,45 @@
+Debug environment for mac os pycharm 
+1.Download and install ¡°pycharm¡±
+	Download ¡°pycharm¡± from official website and install it.
+	
+2.Download ¡°adb¡± and setup environment variables
+	Step:
+		1)	Download "mac-adb" and "mac-fastboot" to local host,then change their name to "adb" and "fastboot"
+		2)	Move "adb" and "fastboot" to /usr/bin/
+				Note:If you hadn't move them to /usr/bin/,pycharm will display "unable to execute ADB..." when excuting script.
+	PS:adb url:https://github.com/corbindavenport/nexus-tools/tree/master/bin
+	
+3.Download ui-tests-octans-v1.0
+	url: https://git.acadine.com/qa/ui-tests
+	branch: octans-v1.0
+	
+4.Setup virtualenv		
+	Step:	
+		cd /Users/val/PyCharm/ui-tests-octans-v1.0/python/gaia-ui-tests
+		virtualenv venv_name
+		
+5.Activate virtual environment to install required libraries
+	Step:
+		Change "treeherder-client==1.5" to "treeherder-client==1.6" in /Users/val/PyCharm/ui-tests-octans-v1.0/python/gaia-ui-tests/requirements.txt
+			Note:"treeherder-client==1.5" has been deleted. If you hadn't changed it,command line will display "Could not find a version that satisfies the requirement treeherder-client==1.5" when executing python setup.py develop,then you could delete venv_name and execute step 4 again.
+		$ source venv_name/bin/activate
+		(venv_name)$ cd ui_tests/python/gaia_ui_tests/			#must go to this folder
+		(venv_name)$ python setup.py develop
+			Note: Before you do this step ,make sure your network could access google.
+					
+6:Setup Pycharm environment
+	Step:
+		1)	Open pycharm and open directory with path  "/Users/val/PyCharm/ui-tests-octans-v1.0/python/gaia-ui-tests" 
+		2)	Enter gaiatest/tests/functional/camera and open a script
+		3)	Click the "Edit Configurations" button in the top right corner of pycharm
+		4)	Add new configuration with "python" option
+		5)	The name can be defined by user
+		6)	Script:/Users/val/PyCharm/ui-tests-octans-v1.0/python/gaia-ui-tests/venv_name/bin/gaiatest
+		7)	Script parameters:
+			--testvars
+			/Users/val/PyCharm/ui-tests-octans-v1.0/python/gaia-ui-tests/gaiatest/testvars_template.json
+			/Users/val/PyCharm/ui-tests-octans-v1.0/python/gaia-ui-tests/gaiatest/tests/functional/camera/test_camera_capture_photo.py
+			--address
+			localhost:2828
+		8)	Working directory:/Users/val/PyCharm/ui-tests-octans-v1.0/python/gaia-ui-tests/2.2/bin
+	

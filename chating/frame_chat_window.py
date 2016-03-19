@@ -17,6 +17,37 @@ __version__ = "1.0.0"
 __author__ = "xinfeng.yang"
 __all__ = ["MqttChatingFrame"]
 
+
+mylock = threading.RLock()  
+num=0  
+
+class myThread(threading.Thread):  
+    def __init__(self, name):  
+        threading.Thread.__init__(self)  
+        self.t_name = name  
+          
+    def run(self):  
+        global num  
+        while True:  
+            mylock.acquire()  
+            print '\nThread(%s) locked, Number: %d'%(self.t_name, num)  
+            if num>=4:  
+                mylock.release()  
+                print '\nThread(%s) released, Number: %d'%(self.t_name, num)  
+                break  
+            num+=1  
+            print '\nThread(%s) released, Number: %d'%(self.t_name, num)  
+            mylock.release()  
+              
+def test():  
+    thread1 = myThread('A')  
+    thread2 = myThread('B')  
+    thread1.start()  
+    thread2.start()  
+   
+if __name__== '__main__':  
+    test()  
+
 class MqttChatingFrame(tk.Frame):
     def __init__(self, master=None, logout=None):
         tk.Frame.__init__(self, master)        
@@ -41,11 +72,13 @@ class MqttChatingFrame(tk.Frame):
         self.columnconfigure(0, weight=1) 
         
     def __send_message(self, event):
+        mylock = threading.RLock()
         _context = self._send_message.get(0.0, tk.END)
         threading.Thread(target=mqtt(_context)).start() 
-            
-        self._receive_message.insert(tk.END, _context)
-        self._send_message.delete(0.0, tk.END)
+
+#             
+#         self._receive_message.insert(tk.END, _context)
+#         self._send_message.delete(0.0, tk.END)
 
         
 def mqtt(message):
